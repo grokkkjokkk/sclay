@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MHD Generator - 3D Isometric Interactive Schematic</title>
+    <style>
+        :root {
+            --primary: #1e293b;
+            --accent: #38bdf8;
+            --bg: #0f172a;
+            --panel: #1e293b;
+            --text: #f8fafc;
+            --border: #334155;
+        }
+        body { 
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
+            background-color: var(--bg); 
+            color: var(--text); 
+            margin: 0; 
+            padding: 20px; 
+            line-height: 1.6;
+        }
+        .container { 
+            max-width: 1100px; 
+            margin: 0 auto; 
+            background: var(--panel); 
+            padding: 25px; 
+            border-radius: 12px; 
+            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+            border: 1px solid var(--border);
+        }
+        h1 { 
+            color: #f1f5f9; 
+            border-bottom: 2px solid var(--accent); 
+            padding-bottom: 8px; 
+            margin-top: 0;
+            font-size: 1.8rem;
+        }
+        .layout { 
+            display: flex; 
+            gap: 20px; 
+            flex-wrap: wrap; 
+            margin-top: 20px;
+        }
+        .controls, .metrics { 
+            flex: 1; 
+            min-width: 300px; 
+            padding: 20px; 
+            background: #0f172a; 
+            border-radius: 8px; 
+            border: 1px solid var(--border);
+        }
+        h3 { margin-top: 0; color: var(--accent); font-size: 1.2rem; }
+        .visualization { 
+            width: 100%; 
+            text-align: center; 
+            margin-top: 20px; 
+            background: #090d16; 
+            border-radius: 8px; 
+            padding: 15px 0; 
+            border: 1px solid var(--border);
+            position: relative;
+        }
+        canvas { 
+            background: #0b1120; 
+            border-radius: 6px; 
+            max-width: 100%;
+        }
+        label { 
+            font-weight: 600; 
+            display: flex; 
+            justify-content: space-between; 
+            margin-top: 15px; 
+            font-size: 0.9em;
+            color: #cbd5e1;
+        }
+        input[type=range] { 
+            width: 100%; 
+            margin: 8px 0 2px 0; 
+            cursor: pointer;
+            accent-color: var(--accent);
+        }
+        .metric-box { 
+            background: #1e293b; 
+            padding: 12px 15px; 
+            margin-top: 12px; 
+            border-left: 4px solid #ef4444; 
+            border-radius: 6px; 
+            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
+        }
+        .metric-title { font-weight: 600; color: #94a3b8; font-size: 0.85em; }
+        .metric-value { 
+            font-size: 1.4em; 
+            font-weight: bold; 
+            color: #f8fafc; 
+            margin: 2px 0;
+        }
+        .formula { 
+            font-size: 0.8em; 
+            color: #38bdf8; 
+            font-family: monospace; 
+            background: #0f172a;
+            padding: 2px 6px;
+            border-radius: 4px;
+            display: inline-block;
+        }
+        .hint {
+            font-size: 0.8em;
+            color: #64748b;
+            font-style: italic;
+            margin-bottom: 8px;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>3D Isometric MHD Generator Schematic</h1>
+        <p style="color: #94a3b8; font-size: 0.95em;">Interactive 3D wireframe/solid layout illustrating orthogonal vectors ($\mathbf{v} \perp \mathbf{B} \perp \mathbf{J}$) and real-time particle fluid dynamics.</p>
+        
+        <div class="layout">
+            <div class="controls">
+                <h3>System Parameters</h3>
+                
+                <label><span>Flow Velocity (v)</span> <span><span id="v-val">5.0</span> m/s</span></label>
+                <input type="range" id="v-slider" min="1" max="15" step="0.1" value="5">
+                
+                <label><span>Magnetic Field (B)</span> <span><span id="b-val">1.5</span> T</span></label>
+                <input type="range" id="b-slider" min="0.1" max="5.0" step="0.1" value="1.5">
+                
+                <label><span>Channel Gap Distance (d)</span> <span><span id="d-val">0.05</span> m</span></label>
+                <input type="range" id="d-slider" min="0.02" max="0.15" step="0.01" value="0.05">
+                
+                <label><span>Fluid Conductivity (σ)</span> <span><span id="c-val">4.8</span> S/m</span></label>
+                <span class="hint">Standard seawater ~ 4.8 S/m</span>
+                <input type="range" id="c-slider" min="1.0" max="15.0" step="0.1" value="4.8">
+            </div>
+            
+            <div class="metrics">
+                <h3>Calculated Output</h3>
+                
+                <div class="metric-box" style="border-left-color: #22c55e;">
+                    <div class="metric-title">Induced Open-Circuit Voltage (V<sub>oc</sub>)</div>
+                    <div class="metric-value"><span id="voc-out">0.375</span> V</div>
+                    <div class="formula">V<sub>oc</sub> = v × B × d</div>
+                </div>
+                
+                <div class="metric-box" style="border-left-color: #eab308;">
+                    <div class="metric-title">Internal Fluid Resistance (R<sub>int</sub>)</div>
+                    <div class="metric-value"><span id="rint-out">0.104</span> Ω</div>
+                    <div class="formula">R<sub>int</sub> = d / (σ × A)</div>
+                </div>
+                
+                <div class="metric-box" style="border-left-color: #ef4444;">
+                    <div class="metric-title">Max Extracted Power (P<sub>max</sub>)</div>
+                    <div class="metric-value"><span id="pmax-out">0.338</span> W</div>
+                    <div class="formula">P<sub>max</sub> = V<sub>oc</sub>² / (4 × R<sub>int</sub>)</div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="visualization">
+            <canvas id="isoCanvas" width="900" height="500"></canvas>
+        </div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById('isoCanvas');
+        const ctx = canvas.getContext('2d');
+        
+        const AREA = 0.1; // m² fixed electrode surface area
+        
+        // Isometric Projection Math
+        const originX = canvas.width / 2 - 120;
+        const originY = canvas.height / 2 + 60;
+        const scale = 2.2;
+        const angle = Math.PI / 6; // 30 degrees isometric angle
+
+        function project(x, y, z) {
+            // Isometric transformation
+            const isoX = originX + (x - y) * Math.cos(angle) * scale;
+            const isoY = originY + (x + y) * Math.sin(angle) * scale - z * scale;
+            return { x: isoX, y: isoY };
+        }
+
+        // Initialize 3D Saltwater Particles
+        const numParticles = 120;
+        let particles = [];
+        for (let i = 0; i < numParticles; i++) {
+            particles.push({
+                x: Math.random() * 260 - 130, // along channel length
+                y: Math.random() * 30 - 15,    // along channel depth
+                z: 0,                          // vertical inside gap
+                speedOffset: Math.random() * 0.4 + 0.8,
+                radius: Math.random() * 2 + 1.5,
+                charge: Math.random() > 0.5 ? 1 : -1 // positive or negative ion
+            });
+        }
+
+        function drawIsoBox(x, y, z, w, l, h, strokeStyle, fillStyle, isWireframe = false) {
+            // Box vertices in 3D
+            const p0 = project(x, y, z);
+            const p1 = project(x + w, y, z);
+            const p2 = project(x + w, y + l, z);
+            const p3 = project(x, y + l, z);
+
+            const p4 = project(x, y, z + h);
+            const p5 = project(x + w, y, z + h);
+            const p6 = project(x + w, y + l, z + h);
+            const p7 = project(x, y + l, z + h);
+
+            if (!isWireframe && fillStyle) {
+                // Top face
+                ctx.fillStyle = fillStyle;
+                ctx.beginPath();
+                ctx.moveTo(p4.x, p4.y);
+                ctx.lineTo(p5.x, p5.y);
+                ctx.lineTo(p6.x, p6.y);
+                ctx.lineTo(p7.x, p7.y);
+                ctx.closePath();
+                ctx.fill();
+
+                // Right face
+                ctx.beginPath();
+                ctx.moveTo(p1.x, p1.y);
+                ctx.lineTo(p5.x, p5.y);
+                ctx.lineTo(p6.x, p6.y);
+                ctx.lineTo(p2.x, p2.y);
+                ctx.closePath();
+                ctx.fill();
+
+                // Left/Front face
+                ctx.beginPath();
+                ctx.moveTo(p0.x, p0.y);
+                ctx.lineTo(p1.x, p1.y);
+                ctx.lineTo(p5.x, p5.y);
+                ctx.lineTo(p4.x, p4.y);
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Draw Wireframe Edges
+            ctx.strokeStyle = strokeStyle || '#38bdf8';
+            ctx.lineWidth = 1.5;
+
+            const edges = [
+                [p0, p1], [p1, p2], [p2, p3], [p3, p0], // bottom
+                [p4, p5], [p5, p6], [p6, p7], [p7, p4], // top
+                [p0, p4], [p1, p5], [p2, p6], [p3, p7]  // pillars
+            ];
+
+            edges.forEach(([start, end]) => {
+                ctx.beginPath();
+                ctx.moveTo(start.x, start.y);
+                ctx.lineTo(end.x, end.y);
+                ctx.stroke();
+            });
+        }
+
+        function render() {
+            // Get Slider values
+            const v = parseFloat(document.getElementById('v-slider').value);
+            const B = parseFloat(document.getElementById('b-slider').value);
+            const d = parseFloat(document.getElementById('d-slider').value);
+            const sigma = parseFloat(document.getElementById('c-slider').value);
+
+            // Update text
+            document.getElementById('v-val').innerText = v.toFixed(1);
+            document.getElementById('b-val').innerText = B.toFixed(1);
+            document.getElementById('d-val').innerText = d.toFixed(2);
+            document.getElementById('c-val').innerText = sigma.toFixed(1);
+
+            // Calculate Equations
+            const Voc = v * B * d;
+            const Rint = d / (sigma * AREA);
+            const Pmax = (Voc * Voc) / (4 * Rint);
+
+            document.getElementById('voc-out').innerText = Voc.toFixed(3);
+            document.getElementById('rint-out').innerText = Rint.toFixed(3);
+            document.getElementById('pmax-out').innerText = Pmax.toFixed(3);
+
+            // Clear Screen
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw Isometric Grid Background
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 0.5;
+            for (let gx = -200; gx <= 200; gx += 40) {
+                const pStart = project(gx, -150, -40);
+                const pEnd = project(gx, 150, -40);
+                ctx.beginPath();
+                ctx.moveTo(pStart.x, pStart.y);
+                ctx.lineTo(pEnd.x, pEnd.y);
+                ctx.stroke();
+            }
+
+            const channelLength = 260;
+            const channelWidth = 40;
+            const channelHeight = d * 800; // Scaled gap height for visual clarity
+
+            // 1. Bottom Magnet Block (South Pole)
+            drawIsoBox(-60, -30, -50, 120, 60, 25, '#64748b', 'rgba(30, 41, 59, 0.7)');
+
+            // 2. Bottom Cathode (-) Plate
+            drawIsoBox(-50, -20, -5, 100, 40, 5, '#38bdf8', 'rgba(56, 189, 248, 0.3)');
+
+            // 3. Fluid Channel Duct (Transparent Wireframe Box)
+            drawIsoBox(-130, -20, 0, channelLength, channelWidth, channelHeight, '#94a3b8', null, true);
+
+            // 4. Animate & Render 3D Ions / Particles inside Channel
+            particles.forEach(p => {
+                p.x += v * p.speedOffset * 0.8;
+                if (p.x > 130) p.x = -130; // reset flow loop
+
+                // Dynamic deflection (ion separation due to Lorentz force)
+                const drift = (p.charge * B * v * 0.15);
+                p.z = (channelHeight / 2) + Math.sin(p.x * 0.05) * 2 + drift;
+                p.z = Math.max(2, Math.min(channelHeight - 2, p.z));
+
+                const pt = project(p.x, p.y, p.z);
+                ctx.fillStyle = p.charge > 0 ? '#ef4444' : '#38bdf8';
+                ctx.beginPath();
+                ctx.arc(pt.x, pt.y, p.radius, 0, Math.PI * 2);
+                ctx.fill();
+            });
+
+            // 5. Top Anode (+) Plate
+            drawIsoBox(-50, -20, channelHeight, 100, 40, 5, '#ef4444', 'rgba(239, 68, 68, 0.3)');
+
+            // 6. Top Magnet Block (North Pole)
+            drawIsoBox(-60, -30, channelHeight + 25, 120, 60, 25, '#e2e8f0', 'rgba(148, 163, 184, 0.3)');
+
+            // 7. External Electrical Circuit (3D Wire Loop & Resistor)
+            const wireTop = project(0, 0, channelHeight + 5);
+            const wireTopOut = project(0, -90, channelHeight + 5);
+            const wireBottom = project(0, 0, 0);
+            const wireBottomOut = project(0, -90, 0);
+            const loadResistor = project(0, -90, channelHeight / 2);
+
+            ctx.strokeStyle = '#eab308';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(wireTop.x, wireTop.y);
+            ctx.lineTo(wireTopOut.x, wireTopOut.y);
+            ctx.lineTo(loadResistor.x, loadResistor.y - 15);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(wireBottom.x, wireBottom.y);
+            ctx.lineTo(wireBottomOut.x, wireBottomOut.y);
+            ctx.lineTo(loadResistor.x, loadResistor.y + 15);
+            ctx.stroke();
+
+            // Load Block
+            drawIsoBox(-10, -95, channelHeight / 2 - 15, 20, 10, 30, '#eab308', 'rgba(234, 179, 8, 0.4)');
+
+            // Labels and Annotations
+            ctx.fillStyle = '#f8fafc';
+            ctx.font = 'bold 12px sans-serif';
+            ctx.fillText('External Load (R_L)', loadResistor.x - 55, loadResistor.y);
+
+            ctx.fillStyle = '#ef4444';
+            const anodePt = project(-50, -20, channelHeight + 10);
+            ctx.fillText('(+) Anode Plate', anodePt.x - 20, anodePt.y - 10);
+
+            ctx.fillStyle = '#38bdf8';
+            const cathodePt = project(-50, -20, -15);
+            ctx.fillText('(-) Cathode Plate', cathodePt.x - 20, cathodePt.y + 20);
+
+            // Vector Callout
+            ctx.fillStyle = '#22c55e';
+            const flowPt = project(-120, 0, channelHeight / 2);
+            ctx.fillText(`Flow v = ${v.toFixed(1)} m/s ➔`, flowPt.x - 80, flowPt.y);
+
+            requestAnimationFrame(render);
+        }
+
+        render();
+    </script>
+</body>
+</html>
