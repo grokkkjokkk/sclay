@@ -4,166 +4,260 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MHD Generator - 3D Isometric Interactive Schematic</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        grok: {
+                            bg: '#0a0a0a',
+                            surface: '#111111',
+                            elevated: '#1a1a1a',
+                            border: '#2a2a2a',
+                            muted: '#a1a1aa',
+                            accent: '#8b5cf6',
+                            accentHover: '#a78bfa',
+                        }
+                    },
+                    fontFamily: {
+                        sans: ['Inter', 'ui-sans-serif', 'system-ui', 'sans-serif'],
+                    }
+                }
+            }
+        }
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
         :root {
-            --primary: #1e293b;
-            --accent: #38bdf8;
-            --bg: #0f172a;
-            --panel: #1e293b;
-            --text: #f8fafc;
-            --border: #334155;
+            --accent: #8b5cf6;
+            --accent-soft: rgba(139, 92, 246, 0.12);
+            --bg: #0a0a0a;
+            --surface: #111111;
+            --panel: #1a1a1a;
+            --border: #2a2a2a;
+            --muted: #a1a1aa;
+            --text: #f4f4f5;
         }
-        body { 
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; 
-            background-color: var(--bg); 
-            color: var(--text); 
-            margin: 0; 
-            padding: 20px; 
+
+        body {
+            background-color: var(--bg);
+            color: var(--text);
+            margin: 0;
             line-height: 1.6;
         }
-        .container { 
-            max-width: 1100px; 
-            margin: 0 auto; 
-            background: var(--panel); 
-            padding: 25px; 
-            border-radius: 12px; 
-            box-shadow: 0 10px 25px rgba(0,0,0,0.5); 
+
+        .page-shell {
+            background: radial-gradient(circle at top, rgba(139, 92, 246, 0.08), transparent 30%), var(--surface);
             border: 1px solid var(--border);
+            border-radius: 1.25rem;
+            box-shadow: 0 14px 28px rgba(0, 0, 0, 0.22);
         }
-        h1 { 
-            color: #f1f5f9; 
-            border-bottom: 2px solid var(--accent); 
-            padding-bottom: 8px; 
-            margin-top: 0;
-            font-size: 1.8rem;
-        }
-        .layout { 
-            display: flex; 
-            gap: 20px; 
-            flex-wrap: wrap; 
-            margin-top: 20px;
-        }
-        .controls, .metrics { 
-            flex: 1; 
-            min-width: 300px; 
-            padding: 20px; 
-            background: #0f172a; 
-            border-radius: 8px; 
+
+        .panel {
+            background: rgba(17, 17, 17, 0.96);
             border: 1px solid var(--border);
+            border-radius: 0.9rem;
+            padding: 0.9rem;
         }
-        h3 { margin-top: 0; color: var(--accent); font-size: 1.2rem; }
-        .visualization { 
-            width: 100%; 
-            text-align: center; 
-            margin-top: 20px; 
-            background: #090d16; 
-            border-radius: 8px; 
-            padding: 15px 0; 
-            border: 1px solid var(--border);
-            position: relative;
+
+        .control-row {
+            margin-top: 0.35rem;
         }
-        canvas { 
-            background: #0b1120; 
-            border-radius: 6px; 
-            max-width: 100%;
+
+        label {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 0.75rem;
+            font-size: 0.7rem;
+            font-weight: 500;
+            color: #e4e4e7;
+            margin: 0.1rem 0 0.15rem;
         }
-        label { 
-            font-weight: 600; 
-            display: flex; 
-            justify-content: space-between; 
-            margin-top: 15px; 
-            font-size: 0.9em;
-            color: #cbd5e1;
-        }
-        input[type=range] { 
-            width: 100%; 
-            margin: 8px 0 2px 0; 
+
+        input[type=range] {
+            width: 100%;
+            margin: 0.2rem 0 0;
             cursor: pointer;
             accent-color: var(--accent);
+            height: 1.3rem;
         }
-        .metric-box { 
-            background: #1e293b; 
-            padding: 12px 15px; 
-            margin-top: 12px; 
-            border-left: 4px solid #ef4444; 
-            border-radius: 6px; 
-            box-shadow: 0 2px 4px rgba(0,0,0,0.2); 
-        }
-        .metric-title { font-weight: 600; color: #94a3b8; font-size: 0.85em; }
-        .metric-value { 
-            font-size: 1.4em; 
-            font-weight: bold; 
-            color: #f8fafc; 
-            margin: 2px 0;
-        }
-        .formula { 
-            font-size: 0.8em; 
-            color: #38bdf8; 
-            font-family: monospace; 
-            background: #0f172a;
-            padding: 2px 6px;
-            border-radius: 4px;
-            display: inline-block;
-        }
+
         .hint {
-            font-size: 0.8em;
-            color: #64748b;
-            font-style: italic;
-            margin-bottom: 8px;
             display: block;
+            font-size: 0.64rem;
+            color: var(--muted);
+            font-style: italic;
+            margin-bottom: 0.2rem;
+        }
+
+        .metric-box {
+            background: rgba(26, 26, 26, 0.92);
+            border: 1px solid var(--border);
+            border-left: 4px solid #8b5cf6;
+            border-radius: 0.75rem;
+            padding: 0.5rem 0.7rem;
+            margin-top: 0.35rem;
+        }
+
+        .metric-box:nth-child(2) { border-left-color: #eab308; }
+        .metric-box:nth-child(3) { border-left-color: #22c55e; }
+        .metric-box:nth-child(4) { border-left-color: #ef4444; }
+
+        .metric-title {
+            font-size: 0.68rem;
+            letter-spacing: 0.02em;
+            font-weight: 600;
+            color: #a1a1aa;
+            text-transform: uppercase;
+        }
+
+        .metric-value {
+            font-size: clamp(1.1rem, 1.8vw, 1.4rem);
+            font-weight: 700;
+            color: #f4f4f5;
+            margin: 0.1rem 0 0.1rem;
+        }
+
+        .formula {
+            display: inline-block;
+            font-size: 0.66rem;
+            color: #c4b5fd;
+            background: rgba(139, 92, 246, 0.08);
+            border: 1px solid rgba(139, 92, 246, 0.2);
+            padding: 0.15rem 0.4rem;
+            border-radius: 0.3rem;
+            font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+        }
+
+        .viz-shell {
+            background: linear-gradient(180deg, rgba(11, 11, 12, 0.96), rgba(12, 12, 16, 0.96));
+            border: 1px solid var(--border);
+            border-radius: 0.9rem;
+            padding: 0.5rem;
+            margin-top: 0;
+        }
+
+        canvas {
+            display: block;
+            width: 100%;
+            max-width: 100%;
+            height: auto;
+            background: #0b1120;
+            border-radius: 0.75rem;
+            border: 1px solid rgba(255,255,255,0.04);
+            margin-left: -18px;
+            transform: scale(0.9);
+            transform-origin: center center;
+        }
+
+        @media (max-width: 640px) {
+            .panel {
+                padding: 1rem;
+            }
         }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>3D Isometric MHD Generator Schematic</h1>
-        <p style="color: #94a3b8; font-size: 0.95em;">Interactive 3D wireframe/solid layout illustrating orthogonal vectors ($\mathbf{v} \perp \mathbf{B} \perp \mathbf{J}$) and real-time particle fluid dynamics.</p>
-        
-        <div class="layout">
-            <div class="controls">
-                <h3>System Parameters</h3>
-                
-                <label><span>Flow Velocity (v)</span> <span><span id="v-val">5.0</span> m/s</span></label>
-                <input type="range" id="v-slider" min="1" max="15" step="0.1" value="5">
-                
-                <label><span>Magnetic Field (B)</span> <span><span id="b-val">1.5</span> T</span></label>
-                <input type="range" id="b-slider" min="0.1" max="5.0" step="0.1" value="1.5">
-                
-                <label><span>Channel Gap Distance (d)</span> <span><span id="d-val">0.05</span> m</span></label>
-                <input type="range" id="d-slider" min="0.02" max="0.15" step="0.01" value="0.05">
-                
-                <label><span>Fluid Conductivity (σ)</span> <span><span id="c-val">4.8</span> S/m</span></label>
-                <span class="hint">Standard seawater ~ 4.8 S/m</span>
-                <input type="range" id="c-slider" min="1.0" max="15.0" step="0.1" value="4.8">
+<body class="bg-grok-bg text-zinc-100 font-sans antialiased min-h-screen">
+    <header class="sticky top-0 z-50 bg-grok-bg/90 backdrop-blur-md border-b border-grok-border">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 h-14 flex items-center justify-between">
+            <a href="../../index.html" class="font-semibold text-sm tracking-tight text-white hover:text-zinc-200 transition">
+                <span class="uppercase tracking-wider">SCLAY NZ</span>
+            </a>
+            <nav class="flex items-center gap-5 sm:gap-6 text-sm text-zinc-400">
+                <a href="../../index.html#about" class="hover:text-white transition">Home</a>
+                <a href="../../index.html#approach" class="hover:text-white transition">Approach</a>
+                <a href="../../work.html" class="text-white font-medium">Work</a>
+                <a href="../../entity.html" class="hover:text-white transition">Entity</a>
+                <a href="../../index.html#contact" class="text-grok-accent hover:text-grok-accentHover transition font-medium">Contact</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="max-w-5xl mx-auto px-4 sm:px-6 py-8 sm:py-10 w-full">
+        <div class="mb-6 sm:mb-8">
+            <p class="text-xs font-medium tracking-[0.22em] uppercase text-grok-accent mb-3">WEGEN-MHD</p>
+            <h1 class="text-3xl sm:text-4xl font-semibold tracking-tight text-white mb-3">Wave Energy Generation - Magneto-Hydrodynamics</h1>
+            <p class="max-w-3xl text-sm sm:text-base text-zinc-400 leading-relaxed">
+                Interactive illustration of orthogonal vectors and dynamic fluid transport in a conductive channel.
+            </p>
+        </div>
+
+        <div class="page-shell p-3 sm:p-4">
+            <div class="viz-shell mb-3 sm:mb-4">
+                <canvas id="isoCanvas" width="900" height="500"></canvas>
             </div>
-            
-            <div class="metrics">
-                <h3>Calculated Output</h3>
-                
-                <div class="metric-box" style="border-left-color: #22c55e;">
-                    <div class="metric-title">Induced Open-Circuit Voltage (V<sub>oc</sub>)</div>
-                    <div class="metric-value"><span id="voc-out">0.375</span> V</div>
-                    <div class="formula">V<sub>oc</sub> = v × B × d</div>
-                </div>
-                
-                <div class="metric-box" style="border-left-color: #eab308;">
-                    <div class="metric-title">Internal Fluid Resistance (R<sub>int</sub>)</div>
-                    <div class="metric-value"><span id="rint-out">0.104</span> Ω</div>
-                    <div class="formula">R<sub>int</sub> = d / (σ × A)</div>
-                </div>
-                
-                <div class="metric-box" style="border-left-color: #ef4444;">
-                    <div class="metric-title">Max Extracted Power (P<sub>max</sub>)</div>
-                    <div class="metric-value"><span id="pmax-out">0.338</span> W</div>
-                    <div class="formula">P<sub>max</sub> = V<sub>oc</sub>² / (4 × R<sub>int</sub>)</div>
-                </div>
+
+            <div class="grid lg:grid-cols-[1.1fr_0.9fr] gap-3 sm:gap-4">
+                <section class="panel py-3 px-3 sm:py-4 sm:px-4">
+                    <div class="flex items-center justify-between gap-3 mb-1">
+                        <h2 class="text-sm sm:text-base font-semibold text-white">System parameters</h2>
+                        <span class="text-[9px] tracking-[0.18em] uppercase text-grok-accent">Open loop</span>
+                    </div>
+
+                    <div class="control-row mt-2">
+                        <label class="text-[11px] sm:text-[12px]"><span>Flow Velocity (v)</span> <span class="text-zinc-300"><span id="v-val">5.0</span> m/s</span></label>
+                        <input type="range" id="v-slider" min="1" max="15" step="0.1" value="5">
+                    </div>
+
+                    <div class="control-row mt-2">
+                        <label class="text-[11px] sm:text-[12px]"><span>Magnetic Field (B)</span> <span class="text-zinc-300"><span id="b-val">1.5</span> T</span></label>
+                        <input type="range" id="b-slider" min="0.1" max="5.0" step="0.1" value="1.5">
+                    </div>
+
+                    <div class="control-row mt-2">
+                        <label class="text-[11px] sm:text-[12px]"><span>Channel Gap Distance (d)</span> <span class="text-zinc-300"><span id="d-val">0.05</span> m</span></label>
+                        <input type="range" id="d-slider" min="0.02" max="0.15" step="0.01" value="0.05">
+                    </div>
+
+                    <div class="control-row mt-2">
+                        <label class="text-[11px] sm:text-[12px]"><span>Fluid Conductivity (σ)</span> <span class="text-zinc-300"><span id="c-val">4.8</span> S/m</span></label>
+                        <span class="hint text-[10px] sm:text-[11px]">Standard seawater ~ 4.8 S/m</span>
+                        <input type="range" id="c-slider" min="1.0" max="15.0" step="0.1" value="4.8">
+                    </div>
+                </section>
+
+                <aside class="panel py-3 px-3 sm:py-4 sm:px-4">
+                    <div class="flex items-center justify-between gap-3 mb-2">
+                        <h2 class="text-sm sm:text-base font-semibold text-white">Calculated output</h2>
+                        <span class="text-[9px] tracking-[0.18em] uppercase text-zinc-500">Model</span>
+                    </div>
+
+                    <div class="metric-box mt-2 p-2.5 sm:p-3">
+                        <div class="metric-title text-[9px] sm:text-[10px]">Induced Open-Circuit Voltage (V<sub>oc</sub>)</div>
+                        <div class="metric-value text-[1.2rem] sm:text-[1.45rem]"><span id="voc-out">0.375</span> V</div>
+                        <div class="formula text-[9px] sm:text-[10px]">V<sub>oc</sub> = v × B × d</div>
+                    </div>
+
+                    <div class="metric-box mt-2 p-2.5 sm:p-3">
+                        <div class="metric-title text-[9px] sm:text-[10px]">Internal Fluid Resistance (R<sub>int</sub>)</div>
+                        <div class="metric-value text-[1.2rem] sm:text-[1.45rem]"><span id="rint-out">0.104</span> Ω</div>
+                        <div class="formula text-[9px] sm:text-[10px]">R<sub>int</sub> = d / (σ × A)</div>
+                    </div>
+
+                    <div class="metric-box mt-2 p-2.5 sm:p-3">
+                        <div class="metric-title text-[9px] sm:text-[10px]">Max Extracted Power (P<sub>max</sub>)</div>
+                        <div class="metric-value text-[1.2rem] sm:text-[1.45rem]"><span id="pmax-out">0.338</span> W</div>
+                        <div class="formula text-[9px] sm:text-[10px]">P<sub>max</sub> = V<sub>oc</sub>² / (4 × R<sub>int</sub>)</div>
+                    </div>
+                </aside>
             </div>
         </div>
-        
-        <div class="visualization">
-            <canvas id="isoCanvas" width="900" height="500"></canvas>
+    </main>
+
+    <footer class="border-t border-grok-border py-8 mt-auto">
+        <div class="max-w-5xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row justify-between items-center gap-4 text-xs text-zinc-500">
+            <p>© 2026 SCLAY NZ · Sole Trader</p>
+            <div class="flex gap-6">
+                <a href="../../index.html" class="hover:text-zinc-300 transition">Home</a>
+                <a href="../../work.html" class="hover:text-zinc-300 transition">Work</a>
+                <a href="../../entity.html" class="hover:text-zinc-300 transition">Entity</a>
+            </div>
         </div>
-    </div>
+    </footer>
 
     <script>
         const canvas = document.getElementById('isoCanvas');
@@ -172,15 +266,23 @@
         const AREA = 0.1; // m² fixed electrode surface area
         
         // Isometric Projection Math
-        const originX = canvas.width / 2 - 120;
-        const originY = canvas.height / 2 + 60;
-        const scale = 2.2;
+        const originX = canvas.width / 2 - 160;
+        const originY = canvas.height / 2 + 70;
+        const sceneOffsetX = 150;
+        const sceneOffsetY = -75;
+        const scale = 1.9;
         const angle = Math.PI / 6; // 30 degrees isometric angle
+        const xAxisRotation = -Math.PI / 2; // 90° clockwise about the x axis
 
         function project(x, y, z) {
+            // Rotate the scene 90° clockwise around the x-axis before projection.
+            const rx = x;
+            const ry = y * Math.cos(xAxisRotation) - z * Math.sin(xAxisRotation);
+            const rz = y * Math.sin(xAxisRotation) + z * Math.cos(xAxisRotation);
+
             // Isometric transformation
-            const isoX = originX + (x - y) * Math.cos(angle) * scale;
-            const isoY = originY + (x + y) * Math.sin(angle) * scale - z * scale;
+            const isoX = originX + sceneOffsetX + (rx - ry) * Math.cos(angle) * scale;
+            const isoY = originY + sceneOffsetY + (rx + ry) * Math.sin(angle) * scale - rz * scale;
             return { x: isoX, y: isoY };
         }
 
@@ -300,7 +402,7 @@
             const channelHeight = d * 800; // Scaled gap height for visual clarity
 
             // 1. Bottom Magnet Block (South Pole)
-            drawIsoBox(-60, -30, -50, 120, 60, 25, '#64748b', 'rgba(30, 41, 59, 0.7)');
+            drawIsoBox(-60, -30, -50, 120, 60, 25, 'rgba(0,0,0,0)', 'rgba(30, 41, 59, 0)');
 
             // 2. Bottom Cathode (-) Plate
             drawIsoBox(-50, -20, -5, 100, 40, 5, '#38bdf8', 'rgba(56, 189, 248, 0.3)');
@@ -329,7 +431,7 @@
             drawIsoBox(-50, -20, channelHeight, 100, 40, 5, '#ef4444', 'rgba(239, 68, 68, 0.3)');
 
             // 6. Top Magnet Block (North Pole)
-            drawIsoBox(-60, -30, channelHeight + 25, 120, 60, 25, '#e2e8f0', 'rgba(148, 163, 184, 0.3)');
+            drawIsoBox(-60, -30, channelHeight + 25, 120, 60, 25, 'rgba(0,0,0,0)', 'rgba(148, 163, 184, 0)');
 
             // 7. External Electrical Circuit (3D Wire Loop & Resistor)
             const wireTop = project(0, 0, channelHeight + 5);
