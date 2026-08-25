@@ -1,0 +1,805 @@
+<!DOCTYPE html>
+            <html>
+                <head>                    
+                    <meta http-equiv="X-UA-Compatible" content="IE=edge"></meta>
+                    <meta http-equiv="content-type" content="text/html; charset=utf-8"></meta>
+                    <title>On-Chain-AI-PPM-OnSolana-README-SCLAYNZ.md</title>
+                    <style type="text/css">
+                    /*
+Copyright (c) 2017 Chris Patuzzo
+https://twitter.com/chrispatuzzo
+Permission is hereby granted, free of charge, to any person obtaining a copy
+of this software and associated documentation files (the "Software"), to deal
+in the Software without restriction, including without limitation the rights
+to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+copies of the Software, and to permit persons to whom the Software is
+furnished to do so, subject to the following conditions:
+The above copyright notice and this permission notice shall be included in all
+copies or substantial portions of the Software.
+THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
+SOFTWARE.
+*/
+
+body {
+  font-family: Helvetica, arial, sans-serif;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-top: 10px;
+  padding-bottom: 10px;
+  background-color: #0a0a0c;
+  padding: 30px;
+  color: #a1a1aa;
+}
+
+body > *:first-child {
+  margin-top: 0 !important;
+}
+
+body > *:last-child {
+  margin-bottom: 0 !important;
+}
+
+a {
+  color: #8b5cf6;
+  text-decoration: none;
+}
+
+a.absent {
+  color: #a855f7;
+}
+
+a.anchor {
+  display: block;
+  padding-left: 30px;
+  margin-left: -30px;
+  cursor: pointer;
+  position: absolute;
+  top: 0;
+  left: 0;
+  bottom: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  margin: 20px 0 10px;
+  padding: 0;
+  font-weight: bold;
+  -webkit-font-smoothing: antialiased;
+  cursor: text;
+  position: relative;
+}
+
+h2:first-child, h1:first-child, h1:first-child + h2, h3:first-child, h4:first-child, h5:first-child, h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1:hover a.anchor, h2:hover a.anchor, h3:hover a.anchor, h4:hover a.anchor, h5:hover a.anchor, h6:hover a.anchor {
+  text-decoration: none;
+}
+
+h1 tt, h1 code {
+  font-size: inherit;
+}
+
+h2 tt, h2 code {
+  font-size: inherit;
+}
+
+h3 tt, h3 code {
+  font-size: inherit;
+}
+
+h4 tt, h4 code {
+  font-size: inherit;
+}
+
+h5 tt, h5 code {
+  font-size: inherit;
+}
+
+h6 tt, h6 code {
+  font-size: inherit;
+}
+
+h1 {
+  font-size: 28px;
+  color: #ffffff;
+}
+
+h2 {
+  font-size: 24px;
+  border-bottom: 1px solid #27272a;
+  color: #ffffff;
+}
+
+h3 {
+  font-size: 18px;
+  color: #ffffff;
+}
+
+h4 {
+  font-size: 16px;
+  color: #ffffff;
+}
+
+h5 {
+  font-size: 14px;
+  color: #ffffff;
+}
+
+h6 {
+  color: #a1a1aa;
+  font-size: 14px;
+}
+
+p, blockquote, ul, ol, dl, li, table, pre {
+  margin: 15px 0;
+}
+
+/*
+hr {
+  border: 0 none;
+  color: #16161a;
+  height: 4px;
+  padding: 0;
+}
+*/
+body > h2:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+body > h1:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+body > h1:first-child + h2 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+body > h3:first-child, body > h4:first-child, body > h5:first-child, body > h6:first-child {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+a:first-child h1, a:first-child h2, a:first-child h3, a:first-child h4, a:first-child h5, a:first-child h6 {
+  margin-top: 0;
+  padding-top: 0;
+}
+
+h1 p, h2 p, h3 p, h4 p, h5 p, h6 p {
+  margin-top: 0;
+}
+
+li p.first {
+  display: inline-block;
+}
+
+ul, ol {
+  padding-left: 30px;
+}
+
+ul :first-child, ol :first-child {
+  margin-top: 0;
+}
+
+ul :last-child, ol :last-child {
+  margin-bottom: 0;
+}
+
+dl {
+  padding: 0;
+}
+
+dl dt {
+  font-size: 14px;
+  font-weight: bold;
+  font-style: italic;
+  padding: 0;
+  margin: 15px 0 5px;
+}
+
+dl dt:first-child {
+  padding: 0;
+}
+
+dl dt > :first-child {
+  margin-top: 0;
+}
+
+dl dt > :last-child {
+  margin-bottom: 0;
+}
+
+dl dd {
+  margin: 0 0 15px;
+  padding: 0 15px;
+}
+
+dl dd > :first-child {
+  margin-top: 0;
+}
+
+dl dd > :last-child {
+  margin-bottom: 0;
+}
+
+blockquote {
+  border-left: 4px solid #8b5cf6;
+  padding: 0 15px;
+  color: #a1a1aa;
+}
+
+blockquote > :first-child {
+  margin-top: 0;
+}
+
+blockquote > :last-child {
+  margin-bottom: 0;
+}
+
+table {
+  padding: 0;
+}
+table tr {
+  border-top: 1px solid #27272a;
+  background-color: #121214;
+  margin: 0;
+  padding: 0;
+}
+
+table tr:nth-child(2n) {
+  
+}
+
+table tr th {
+  font-weight: bold;
+  border: 1px solid #27272a;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+
+table tr td {
+  border: 1px solid #27272a;
+  text-align: left;
+  margin: 0;
+  padding: 6px 13px;
+}
+
+table tr th :first-child, table tr td :first-child {
+  margin-top: 0;
+}
+
+table tr th :last-child, table tr td :last-child {
+  margin-bottom: 0;
+}
+
+img {
+  max-width: 100%;
+}
+
+span.frame {
+  display: block;
+  overflow: hidden;
+}
+
+span.frame > span {
+  border: 1px solid #27272a;
+  display: block;
+  float: left;
+  overflow: hidden;
+  margin: 13px 0 0;
+  padding: 7px;
+  width: auto;
+}
+
+span.frame span img {
+  display: block;
+  float: left;
+}
+
+span.frame span span {
+  clear: both;
+  color: #a1a1aa;
+  display: block;
+  padding: 5px 0 0;
+}
+
+span.align-center {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+span.align-center > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px auto 0;
+  text-align: center;
+}
+
+span.align-center span img {
+  margin: 0 auto;
+  text-align: center;
+}
+
+span.align-right {
+  display: block;
+  overflow: hidden;
+  clear: both;
+}
+
+span.align-right > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px 0 0;
+  text-align: right;
+}
+
+span.align-right span img {
+  margin: 0;
+  text-align: right;
+}
+
+span.float-left {
+  display: block;
+  margin-right: 13px;
+  overflow: hidden;
+  float: left;
+}
+
+span.float-left span {
+  margin: 13px 0 0;
+}
+
+span.float-right {
+  display: block;
+  margin-left: 13px;
+  overflow: hidden;
+  float: right;
+}
+
+span.float-right > span {
+  display: block;
+  overflow: hidden;
+  margin: 13px auto 0;
+  text-align: right;
+}
+
+code, tt {
+  margin: 0 2px;
+  padding: 0 5px;
+  white-space: nowrap;
+  border: 1px solid #27272a;
+  background-color: #16161a;
+  border-radius: 3px;
+    
+}
+
+pre code {
+  margin: 0;
+  padding: 0;
+  white-space: pre;
+  border: none;
+  background: transparent;
+    
+}
+
+.highlight pre {
+  background-color: #16161a;
+  border: 1px solid #27272a;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;   
+}
+
+pre {
+  background-color: #16161a;
+  border: 1px solid #27272a;
+  font-size: 13px;
+  line-height: 19px;
+  overflow: auto;
+  padding: 6px 10px;
+  border-radius: 3px;
+}
+
+pre code, pre tt {
+  background-color: transparent;
+  border: none;
+}
+
+/* Syntax Highlighting */
+
+.plainText {
+ background-color: #16161a;
+ color: #a1a1aa;
+}
+.htmlServerSideScript {
+ background-color: #121214;
+}
+.htmlComment {
+ color: #307F30;
+}
+.htmlTagDelimiter {
+ color: #7F7FFF;
+}
+.htmlElementName {
+ color: #CC6C4E;
+}
+.htmlAttributeName {
+ color: #FF0000;
+}
+.htmlAttributeValue {
+ color: #7F7FFF;
+}
+.htmlOperator {
+ color: #7F7FFF;
+}
+.comment {
+ color: #307F30;
+}
+.xmlDocTag {
+ color: #808080;
+}
+.xmlDocComment {
+ color: #307F30;
+}
+.string {
+ color: #CC6C4E;
+}
+.stringCSharpVerbatim {
+ color: #CC6C4E;
+}
+.keyword {
+ color: #7F7FFF;
+}
+.preprocessorKeyword {
+ color: #7F7FFF;
+}
+.htmlEntity {
+ color: #FF0000;
+}
+.xmlAttribute {
+ color: #FF0000;
+}
+.xmlAttributeQuotes {
+ color: #000000;
+}
+.xmlAttributeValue {
+ color: #7F7FFF;
+}
+.xmlCDataSection {
+ color: #808080;
+}
+.xmlComment {
+ color: #307F30;
+}
+.xmlDelimiter {
+ color: #7F7FFF;
+}
+.xmlName {
+ color: #CC6C4E;
+}
+.className {
+ color: #48D1CC;
+}
+.cssSelector {
+ color: #CC6C4E;
+}
+.cssPropertyName {
+ color: #FF0000;
+}
+.cssPropertyValue {
+ color: #7F7FFF;
+}
+.sqlSystemFunction {
+ color: #FF00FF;
+}
+.powershellAttribute {
+ color: #B0E0E6;
+}
+.powershellOperator {
+ color: #808080;
+}
+.powershellType {
+ color: #008080;
+}
+.powershellVariable {
+ color: #FF4500;
+}
+.type {
+ color: #008080;
+}
+.typeVariable {
+ color: #008080;
+ font-style: italic;
+}
+.namespace {
+ color: #000080;
+}
+.constructor {
+ color: #800080;
+}
+.predefined {
+ color: #000080;
+}
+.pseudoKeyword {
+ color: #000080;
+}
+.stringEscape {
+ color: #808080;
+}
+.controlKeyword {
+ color: #7F7FFF;
+}
+.number {
+}
+.operator {
+}
+.delimiter {
+}
+.markdownHeader {
+ font-weight: bold;
+}
+.markdownCode {
+ color: #008080;
+}
+.markdownListItem {
+ font-weight: bold;
+}
+.italic {
+ font-style: italic;
+}
+.bold {
+ font-weight: bold;
+}
+
+
+                    </style>
+                </head>
+                <body class="markdown-body" style="">
+                <h1 id="0">On-Chain AI Price Prediction on Solana</h1>
+<blockquote id="2">
+<p id="2"><strong>[Experiment]</strong> A fully on-chain AI model running on Solana. 65 bytes of weights, 59.2% accuracy, ~$0.002 per inference.</p>
+</blockquote>
+<p id="4">This is a proof of concept exploring the limits of on-chain machine learning. The entire model (weights, computation, inference) lives on Solana. No off-chain oracles. No external APIs. Pure blockchain execution.</p>
+<h2 id="6">Why?</h2>
+<p id="8">Because we wanted to see if it was possible. Spoiler: it is. Barely.</p>
+<h2 id="10">The Model</h2>
+<pre><code id="12">┌────────────────────────────────────────────────────────────┐
+│                 6 → 8 → 1 NEURAL NETWORK                   │
+├────────────────────────────────────────────────────────────┤
+│                                                            │
+│   Inputs (6 features):     Hidden Layer:      Output:      │
+│   ├── SMA ratio            8 neurons          Binary       │
+│   ├── Momentum             ReLU activation    UP (1)       │
+│   ├── Volatility                              DOWN (0)     │
+│   ├── Trend                                                │
+│   ├── RSI-like                                             │
+│   └── Price position                                       │
+│                                                            │
+│   Total: 65 bytes (48 + 8 + 8 + 1)                         │
+└────────────────────────────────────────────────────────────┘
+</code></pre>
+<h3 id="29">How small is 65 bytes?</h3>
+<ul id="31">
+<li id="31">This README: ~8 KB</li>
+<li id="32">A tweet: ~280 bytes</li>
+<li id="33">A typical ML model: 50-500 MB</li>
+<li id="34"><strong>This model: 65 bytes</strong></li>
+</ul>
+<h3 id="36">How?</h3>
+<p id="38">Everything is <strong>INT8 quantized</strong>. No floats. Each weight is a single byte (-128 to +127).</p>
+<div id="40" class="lang-python editor-colors"><div class="text"><pre>
+# The entire forward pass is integer arithmetic
+output = bias + (input &#215; weight) // 128
+</pre></div>
+</div>
+<p id="45">No numpy. No libraries. Just addition, multiplication, and integer division.</p>
+<h2 id="47">Performance</h2>
+<table id="49">
+<thead>
+<tr id="49">
+<th id="49">Metric</th>
+<th id="49">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr id="51">
+<td id="51">Test Accuracy</td>
+<td id="51"><strong>59.2%</strong></td>
+</tr>
+<tr id="52">
+<td id="52">Test Samples</td>
+<td id="52">1,803</td>
+</tr>
+<tr id="53">
+<td id="53">Total Samples</td>
+<td id="53">9,012</td>
+</tr>
+<tr id="54">
+<td id="54">Precision</td>
+<td id="54">60.6%</td>
+</tr>
+<tr id="55">
+<td id="55">Lookahead</td>
+<td id="55">30 minutes</td>
+</tr>
+<tr id="56">
+<td id="56">Threshold</td>
+<td id="56">0.5%</td>
+</tr>
+</tbody>
+</table>
+<p id="58">Trained on SOL/USDT data from Binance (1-minute candles).</p>
+<h3 id="60">Optimization</h3>
+<p id="62">We started at 53.5% accuracy. To improve, we applied techniques from <a href="https://arxiv.org/abs/2408.12408">xLSTM-TS</a> (arXiv:2408.12408), a paper that achieved 72.82% on stock trend prediction.</p>
+<p id="64">Key insight: raw price data is noisy. The paper uses wavelet denoising. We used a simpler approach for on-chain compatibility: <strong>exponential moving average (EMA) smoothing</strong> before feature extraction. This filters out micro-fluctuations while preserving the trend signal.</p>
+<p id="66">Result: 53.5% → 59.2% (+5.7%)</p>
+<p id="68"><em>Is 59.2% good? It's better than a coin flip. For a 65-byte model running on a blockchain VM, we'll take it.</em></p>
+<h2 id="70">On-Chain Stats</h2>
+<table id="72">
+<thead>
+<tr id="72">
+<th id="72">Metric</th>
+<th id="72">Value</th>
+</tr>
+</thead>
+<tbody>
+<tr id="74">
+<td id="74">Bytecode size</td>
+<td id="74">~4 KB</td>
+</tr>
+<tr id="75">
+<td id="75">Weights</td>
+<td id="75">65 bytes</td>
+</tr>
+<tr id="76">
+<td id="76">Compute Units</td>
+<td id="76">~1,247,000</td>
+</tr>
+<tr id="77">
+<td id="77">Transactions</td>
+<td id="77">2 per inference</td>
+</tr>
+<tr id="78">
+<td id="78">Cost</td>
+<td id="78">~$0.002 per prediction</td>
+</tr>
+<tr id="79">
+<td id="79">Network</td>
+<td id="79">Devnet</td>
+</tr>
+<tr id="80">
+<td id="80">SolanaPython Program</td>
+<td id="80"><code>AdvFUgScZPQmnkhCZ1ZFMN7c1rsanoE7TfYbikggUAxM</code></td>
+</tr>
+</tbody>
+</table>
+<h2 id="82">How It Works</h2>
+<p id="84">The model is deployed as compiled Python bytecode on Solana using a custom python on solana implimentation</p>
+<p id="86"><strong>Deployment (once):</strong></p>
+<ol id="87">
+<li id="87">Compile <code>nn_module.py</code> to custom python bytecode</li>
+<li id="88">Create 3 Solana accounts (module, weights, features)</li>
+<li id="89">Write bytecode and weights via chunked transactions</li>
+</ol>
+<p id="91"><strong>Inference (per prediction):</strong></p>
+<pre><code id="92">TX1: Write 6 input features to account     (~10K CU)
+TX2: Import module → executes on import    (~1.25M CU)
+     └── Reads weights from /sol/2
+     └── Reads features from /sol/3
+     └── Computes forward pass
+     └── Prints 1 (UP) or 0 (DOWN)
+</code></pre>
+<p id="101">The trick: The custom python can't call functions across modules, so the entire NN executes on <code>import</code>. Weird, but it works.</p>
+<h2 id="103">A Solana Python Modification is Required</h2>
+<p id="105">This project requires a small modification to support chunked writes with offset. Without this, you can't write bytecode larger than ~1KB.</p>
+<p id="107">In the <code>custom_python.c</code>, modify the <code>MODE_WRITE_ACCOUNT</code> (0x03) handler to read an offset:</p>
+<div id="109" class="lang-c editor-colors"><div class="cplusplus"><pre>
+<span class="comment">// Around line 447 in custom_python.c</span>
+<span class="comment">// Original: writes data at offset 0</span>
+<span class="comment">// Modified: reads offset from first 2 bytes</span>
+
+<span class="keyword">case</span> 0x03: {  <span class="comment">// MODE_WRITE_ACCOUNT</span>
+    <span class="keyword">if</span> (params-&gt;data_len &lt; 3) <span class="keyword">return</span> ERROR_INVALID_ARGUMENT;
+
+    <span class="comment">// First 2 bytes = offset (little-endian)</span>
+    uint16_t offset = params-&gt;data[1] | (params-&gt;data[2] &lt;&lt; 8);
+    <span class="keyword">const</span> uint8_t* payload = params-&gt;data + 3;
+    uint64_t payload_len = params-&gt;data_len - 3;
+
+    SolAccountInfo* acct = &amp;params-&gt;ka[0];
+    <span class="keyword">if</span> (!acct-&gt;is_writable) <span class="keyword">return</span> ERROR_INVALID_ARGUMENT;
+    <span class="keyword">if</span> (offset + payload_len &gt; acct-&gt;data_len) <span class="keyword">return</span> ERROR_INVALID_ARGUMENT;
+
+    <span class="comment">// Write at offset instead of 0</span>
+    sol_memcpy(acct-&gt;data + offset, payload, payload_len);
+    <span class="keyword">return</span> SUCCESS;
+}
+</pre></div>
+</div>
+<p id="132">Instruction format becomes: <code>[0x03] [offset_lo] [offset_hi] [data...]</code></p>
+<p id="134">Creates 3 accounts on devnet and writes bytecode + weights.</p>
+<h3 id="136">Run Inference</h3>
+<div id="138" class="lang-bash editor-colors"><div class="text"><pre>
+# Default test features
+node src/scripts/user_inference.js
+
+# Custom features (6 INT8 values, 0-255)
+node src/scripts/user_inference.js 128,135,20,130,150,100
+</pre></div>
+</div>
+<h2 id="146">Project Structure</h2>
+<pre><code id="148">├── src/
+│   ├── python/
+│   │   └── nn_module.py       # The neural network (executes on import)
+│   └── scripts/
+│       ├── config.js          # Configuration
+│       ├── deploy_model.js    # Deploy to Solana
+│       ├── user_inference.js  # Run predictions
+│       └── train_optimal.py   # Training script
+├── weights/
+│   └── optimal_model.bin      # Trained weights (65 bytes)
+├── data/                      # Training data
+└── deployment.json.example    # Deployment template
+</code></pre>
+<h2 id="163">Limitations &amp; Learnings</h2>
+<p id="165"><strong>Python on Solana is experimental:</strong></p>
+<ul id="166">
+<li id="166">Many Python builtins don't exist (<code>bytes()</code>, <code>list()</code>, <code>chr()</code>)</li>
+<li id="167">No function calls across modules (<code>module.function()</code> fails)</li>
+<li id="168">Bytecode mode only (script mode is 10x slower)</li>
+</ul>
+<p id="170"><strong>Solana constraints:</strong></p>
+<ul id="171">
+<li id="171">Max ~1.4M compute units per transaction</li>
+<li id="172">Max ~1,232 bytes per instruction (chunked writes needed)</li>
+<li id="173">Must request 256KB heap explicitly</li>
+</ul>
+<p id="175"><strong>What we learned:</strong></p>
+<ul id="176">
+<li id="176">On-chain ML is possible, but painful</li>
+<li id="177">INT8 quantization is mandatory</li>
+<li id="178">Everything must be unrolled (no loops in hot paths)</li>
+<li id="179">The VFS (<code>/sol/N</code>) for account access actually works well</li>
+</ul>
+<h2 id="181">Is This Practical?</h2>
+<p id="183">For production trading? <strong>No.</strong></p>
+<p id="185">But as a proof of concept, it shows that:</p>
+<ul id="186">
+<li id="186">Neural networks can run fully on-chain</li>
+<li id="187">Inference is verifiable and trustless</li>
+<li id="188">Small models (~100 parameters) fit within Solana's constraints</li>
+</ul>
+<p id="190">Potential use cases (theoretical):</p>
+<ul id="191">
+<li id="191">On-chain scoring for DeFi protocols</li>
+<li id="192">Verifiable ML predictions without oracles</li>
+<li id="193">Trustless model execution</li>
+</ul>
+<h2 id="195">License</h2>
+<p id="197">All Rights Reserved</p>
+<p id="199">Copyright (c) 2026 SCLAY NZ</p>
+<p id="201">This source code and its associated documentation are proprietary and confidential.
+Unauthorized copying, modification, distribution, or performance of this software,
+via any medium, is strictly prohibited.</p>
+<h2 id="205">Acknowledgments</h2>
+<ul id="207">
+<li id="207"><a href="https://arxiv.org/abs/2408.12408">xLSTM-TS</a> (arXiv:2408.12408)</li>
+</ul>
+<hr id="209" />
+<p id="211"><em>An experiment in on-chain machine learning by SCLAY NZ .</em></p>
+
+                </body>
+            </html>
