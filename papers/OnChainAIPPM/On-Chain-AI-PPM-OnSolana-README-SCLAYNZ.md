@@ -105,45 +105,6 @@ The trick: The custom python can't call functions across modules, so the entire 
 
 This project requires a small modification to support chunked writes with offset. Without this, you can't write bytecode larger than ~1KB.
 
-In the `custom_python.c`, modify the `MODE_WRITE_ACCOUNT` (0x03) handler to read an offset:
-
-```c
-// Around line 447 in custom_python.c
-// Original: writes data at offset 0
-// Modified: reads offset from first 2 bytes
-
-case 0x03: {  // MODE_WRITE_ACCOUNT
-    if (params->data_len < 3) return ERROR_INVALID_ARGUMENT;
-
-    // First 2 bytes = offset (little-endian)
-    uint16_t offset = params->data[1] | (params->data[2] << 8);
-    const uint8_t* payload = params->data + 3;
-    uint64_t payload_len = params->data_len - 3;
-
-    SolAccountInfo* acct = &params->ka[0];
-    if (!acct->is_writable) return ERROR_INVALID_ARGUMENT;
-    if (offset + payload_len > acct->data_len) return ERROR_INVALID_ARGUMENT;
-
-    // Write at offset instead of 0
-    sol_memcpy(acct->data + offset, payload, payload_len);
-    return SUCCESS;
-}
-```
-
-Instruction format becomes: `[0x03] [offset_lo] [offset_hi] [data...]`
-
-Creates 3 accounts on devnet and writes bytecode + weights.
-
-### Run Inference
-
-```bash
-# Default test features
-node src/scripts/user_inference.js
-
-# Custom features (6 INT8 values, 0-255)
-node src/scripts/user_inference.js 128,135,20,130,150,100
-```
-
 ## Project Structure
 
 ```
